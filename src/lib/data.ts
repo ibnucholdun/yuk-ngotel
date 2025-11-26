@@ -104,6 +104,7 @@ export const getDisabledRoomById = async (roomId: string) => {
     console.log(error);
   }
 };
+
 export const getReservationByUserId = async () => {
   const session = await auth();
 
@@ -113,6 +114,79 @@ export const getReservationByUserId = async () => {
   try {
     const result = await prisma.reservation.findMany({
       where: { userId: session.user.id },
+      include: {
+        Room: {
+          select: {
+            name: true,
+            image: true,
+            price: true,
+          },
+        },
+        User: {
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+        payments: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getRevenueAndReservation = async () => {
+  try {
+    const result = await prisma.reservation.aggregate({
+      _count: true,
+      _sum: { price: true },
+      where: {
+        payments: { status: { not: "failure" } },
+      },
+    });
+    return {
+      revenue: result._sum.price || 0,
+      reservation: result._count,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getTotalCustomers = async () => {
+  try {
+    const result = await prisma.reservation.findMany({
+      distinct: ["userId"],
+      where: {
+        payments: { status: { not: "failure" } },
+      },
+      select: {
+        userId: true,
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getReservations = async () => {
+  const session = await auth();
+
+  if (
+    !session ||
+    !session.user ||
+    !session.user.id ||
+    session.user.role !== "admin"
+  )
+    throw new Error("Unauthorized");
+
+  try {
+    const result = await prisma.reservation.findMany({
       include: {
         Room: {
           select: {

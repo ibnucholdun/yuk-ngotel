@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "./auth";
+import { auth } from "../auth";
 
-const ProtectedRoutes = ["/myreservation", "/checkout", "/admin"];
+const ProtectedRoutes = ["/my-reservation", "/checkout", "/admin"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const session = await auth();
   const isLoggedIn = !!session?.user;
   const role = session?.user?.role;
@@ -25,6 +25,6 @@ export async function middleware(request: NextRequest) {
   }
 }
 
-export const congig = {
+export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

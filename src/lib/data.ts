@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { auth } from "../../auth";
 import { prisma } from "./prisma";
 
@@ -140,6 +141,15 @@ export const getReservationByUserId = async () => {
 };
 
 export const getRevenueAndReservation = async () => {
+  const session = await auth();
+  if (
+    !session ||
+    !session.user ||
+    !session.user.id ||
+    session.user.role !== "admin"
+  )
+    redirect("/");
+
   try {
     const result = await prisma.reservation.aggregate({
       _count: true,
@@ -158,6 +168,14 @@ export const getRevenueAndReservation = async () => {
 };
 
 export const getTotalCustomers = async () => {
+  const session = await auth();
+  if (
+    !session ||
+    !session.user ||
+    !session.user.id ||
+    session.user.role !== "admin"
+  )
+    redirect("/");
   try {
     const result = await prisma.reservation.findMany({
       distinct: ["userId"],
@@ -183,7 +201,7 @@ export const getReservations = async () => {
     !session.user.id ||
     session.user.role !== "admin"
   )
-    throw new Error("Unauthorized");
+    redirect("/");
 
   try {
     const result = await prisma.reservation.findMany({
@@ -209,5 +227,6 @@ export const getReservations = async () => {
     return result;
   } catch (error) {
     console.log(error);
+    return [];
   }
 };

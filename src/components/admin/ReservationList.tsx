@@ -4,7 +4,6 @@ import Image from "next/image";
 
 const ReservationList = async () => {
   const reservations = await getReservations();
-  if (!reservations) return <p>No Reservations Found</p>;
 
   return (
     <div className="bg-white p-4 mt-5 shadow-sm">

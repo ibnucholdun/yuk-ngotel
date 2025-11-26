@@ -1,9 +1,7 @@
 import { getRevenueAndReservation, getTotalCustomers } from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
 import { notFound } from "next/navigation";
-import React from "react";
 import { LuChartArea, LuShoppingCart, LuUsers } from "react-icons/lu";
-import { promise } from "zod";
 
 const DashboardCards = async () => {
   const [revenueAndReservation, totalCustomers] = await Promise.all([

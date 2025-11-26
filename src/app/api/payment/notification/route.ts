@@ -54,6 +54,8 @@ export const POST = async (req: Request) => {
         status: "paid",
       },
     });
+
+    responseData = transaction;
   } else if (
     transactionStatus == "cancel" ||
     transactionStatus == "expire" ||
@@ -68,6 +70,8 @@ export const POST = async (req: Request) => {
         status: "failure",
       },
     });
+
+    responseData = transaction;
   } else if (transactionStatus == "pending") {
     const transaction = await prisma.payment.update({
       where: {
@@ -78,6 +82,8 @@ export const POST = async (req: Request) => {
         status: "pending",
       },
     });
+
+    responseData = transaction;
   }
 
   return NextResponse.json({ responseData }, { status: 200 });

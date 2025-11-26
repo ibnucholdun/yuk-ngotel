@@ -82,7 +82,7 @@ const MyReservationList = async () => {
                 href={`/my-reservation/${reservation.id}`}
                 className="px-6 py-1 bg-orange-400 text-white rounded-md hover:bg-orange-500"
               >
-                Viiew Detail
+                View Detail
               </Link>
             )}
           </div>

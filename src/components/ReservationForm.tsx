@@ -21,10 +21,10 @@ const ReservationForm = ({
   const [startDate, setStartDate] = useState(StartDate);
   const [endDate, setEndDate] = useState(EndDate);
 
-  const handleDateChange = (dates: [Date | null, Date | null]) => {
+  const handleDateChange = (dates: any) => {
     const [start, end] = dates;
-    setStartDate(start ?? StartDate);
-    setEndDate(end ?? EndDate);
+    setStartDate(start);
+    setEndDate(end);
   };
 
   const [state, formAction, isPending] = useActionState(

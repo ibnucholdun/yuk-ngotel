@@ -5,7 +5,20 @@ export const metadata: Metadata = {
   title: "Sign In",
   description: "Sign In to your account",
 };
-const SignInPage = () => {
+const SignInPage = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ callbackUrl?: string }>;
+}) => {
+  const params = (await searchParams)?.callbackUrl;
+
+  let callbackUrl;
+  if (!params) {
+    callbackUrl = "/";
+  } else {
+    callbackUrl = `/${params}`;
+  }
+
   return (
     <div className="min-h-screen flex items-center">
       <div className="bg-white w-96 mx-auto rounded-sm shadow p-8">
@@ -14,7 +27,7 @@ const SignInPage = () => {
           Sign In to your account
         </p>
         <div className="py-4 text-center">
-          <LoginGoogleButton />
+          <LoginGoogleButton callbackUrl={callbackUrl} />
         </div>
       </div>
     </div>

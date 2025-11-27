@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET, POST, PUT, DELETE, OPTIONS",
+            value: "GET, POST",
           },
           {
             key: "Access-Control-Allow-Headers",

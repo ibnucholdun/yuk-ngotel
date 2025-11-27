@@ -3,7 +3,7 @@ export interface PaymentProps {
   payment_type?: string;
   fraud_status: string;
   status_code: string;
-  gross_amount: number;
+  gross_amount: string;
   signature_key: string;
   order_id: string;
 }

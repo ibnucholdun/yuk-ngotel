@@ -4,81 +4,94 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
-  const data: PaymentProps = await req.json();
-  const reservationId = data.order_id;
+  try {
+    const data: PaymentProps = await req.json();
 
-  let responseData = null;
+    const {
+      order_id: reservationId,
+      transaction_status,
+      payment_type,
+      fraud_status,
+      status_code,
+      gross_amount,
+      signature_key,
+    } = data;
 
-  const transactionStatus = data.transaction_status;
-  const paymentType = data.payment_type || null;
-  const fraudStatus = data.fraud_status;
-  const statusCode = data.status_code;
-  const grossAmount = data.gross_amount;
-  const signatureKey = data.signature_key;
+    console.log("📥 Incoming Midtrans Notification:", data);
 
-  const hash = crypto
-    .createHash("sha512")
-    .update(
-      `${reservationId}${statusCode}${grossAmount}${process.env.MIDTRANS_SERVER_KEY}`
-    )
-    .digest("hex");
+    // -----------------------------------------------------
+    // 1️⃣ CEK PAYMENT TERDAFTAR?
+    // -----------------------------------------------------
+    const payment = await prisma.payment.findUnique({
+      where: { reservationId },
+    });
 
-  if (signatureKey !== hash) {
+    if (!payment) {
+      console.log("❌ Payment NOT FOUND for reservationId:", reservationId);
+
+      return NextResponse.json(
+        {
+          error: "Payment not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    // -----------------------------------------------------
+    // 2️⃣ VALIDASI SIGNATURE KEY
+    // -----------------------------------------------------
+    const hash = crypto
+      .createHash("sha512")
+      .update(
+        `${reservationId}${status_code}${gross_amount}${process.env.MIDTRANS_SERVER_KEY}`
+      )
+      .digest("hex");
+
+    if (signature_key !== hash) {
+      console.log("❌ Signature mismatch");
+      return NextResponse.json(
+        { error: "Invalid signature key" },
+        { status: 400 }
+      );
+    }
+
+    // -----------------------------------------------------
+    // 3️⃣ TENTUKAN STATUS BARU
+    // -----------------------------------------------------
+    let newStatus = payment.status;
+
+    if (transaction_status === "capture") {
+      newStatus = fraud_status === "accept" ? "paid" : "failure";
+    } else if (transaction_status === "settlement") {
+      newStatus = "paid";
+    } else if (transaction_status === "pending") {
+      newStatus = "pending";
+    } else if (["cancel", "expire", "deny"].includes(transaction_status)) {
+      newStatus = "failure";
+    }
+
+    // -----------------------------------------------------
+    // 4️⃣ UPDATE PAYMENT
+    // -----------------------------------------------------
+    const updated = await prisma.payment.update({
+      where: { reservationId },
+      data: {
+        method: payment_type ?? null,
+        status: newStatus,
+      },
+    });
+
+    console.log("✅ Payment updated:", updated);
+
     return NextResponse.json(
-      { error: "Invalid signature key" },
-      { status: 400 }
+      { message: "Notification processed", data: updated },
+      { status: 200 }
+    );
+  } catch (err: any) {
+    console.error("🔥 MIDTRANS CALLBACK ERROR:", err);
+    return NextResponse.json(
+      { error: "Internal error", details: err.message },
+      { status: 500 }
     );
   }
-
-  if (transactionStatus == "capture") {
-    if (fraudStatus == "accept") {
-      const transaction = await prisma.payment.update({
-        where: { reservationId },
-        data: {
-          method: paymentType,
-          status: "paid",
-        },
-      });
-
-      responseData = transaction;
-    }
-  } else if (transactionStatus == "settlement") {
-    const transaction = await prisma.payment.update({
-      where: { reservationId },
-      data: {
-        method: paymentType,
-        status: "paid",
-      },
-    });
-
-    responseData = transaction;
-  } else if (
-    transactionStatus == "cancel" ||
-    transactionStatus == "expire" ||
-    transactionStatus == "deny"
-  ) {
-    const transaction = await prisma.payment.update({
-      where: { reservationId },
-      data: {
-        method: paymentType,
-        status: "failure",
-      },
-    });
-
-    responseData = transaction;
-  } else if (transactionStatus == "pending") {
-    const transaction = await prisma.payment.update({
-      where: {
-        id: reservationId,
-      },
-      data: {
-        method: paymentType,
-        status: "pending",
-      },
-    });
-
-    responseData = transaction;
-  }
-
-  return NextResponse.json({ responseData }, { status: 200 });
 };

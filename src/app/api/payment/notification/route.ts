@@ -10,7 +10,7 @@ export const POST = async (req: Request) => {
   let responseData = null;
 
   const transactionStatus = data.transaction_status;
-  const paymentType = data.payment_type;
+  const paymentType = data.payment_type || null;
   const fraudStatus = data.fraud_status;
   const statusCode = data.status_code;
   const grossAmount = data.gross_amount;
@@ -33,9 +33,7 @@ export const POST = async (req: Request) => {
   if (transactionStatus == "capture") {
     if (fraudStatus == "accept") {
       const transaction = await prisma.payment.update({
-        where: {
-          id: reservationId,
-        },
+        where: { reservationId },
         data: {
           method: paymentType,
           status: "paid",
@@ -46,9 +44,7 @@ export const POST = async (req: Request) => {
     }
   } else if (transactionStatus == "settlement") {
     const transaction = await prisma.payment.update({
-      where: {
-        id: reservationId,
-      },
+      where: { reservationId },
       data: {
         method: paymentType,
         status: "paid",
@@ -62,9 +58,7 @@ export const POST = async (req: Request) => {
     transactionStatus == "deny"
   ) {
     const transaction = await prisma.payment.update({
-      where: {
-        id: reservationId,
-      },
+      where: { reservationId },
       data: {
         method: paymentType,
         status: "failure",

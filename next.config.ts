@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/api/payment/notification/:path",
+        source: "/api/payment/notification/:path*",
         headers: [
           {
             key: "Access-Control-Allow-Origin",

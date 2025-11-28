@@ -33,9 +33,13 @@ const ReservationForm = ({
   );
 
   const excludeDates = disabledDate.map((item) => {
+    const startDate = new Date(item.startDate);
+    const endDate = new Date(item.endDate);
+    startDate.setHours(0, 0, 0, 0);
+
     return {
-      start: item.startDate,
-      end: item.endDate,
+      start: startDate,
+      end: endDate,
     };
   });
 

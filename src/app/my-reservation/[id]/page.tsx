@@ -1,5 +1,6 @@
 import ReservationDetail from "@/components/ReservationDetail";
 import { Metadata } from "next";
+import Script from "next/script";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -19,6 +20,12 @@ const MyReservationDetailPage = async ({
         <Suspense fallback={<div>Loading...</div>}>
           <ReservationDetail reservationId={reservationId} />
         </Suspense>
+
+        <Script
+          src="https://app.sandbox.midtrans.com/snap/snap.js"
+          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+          strategy="lazyOnload"
+        />
       </div>
     </div>
   );

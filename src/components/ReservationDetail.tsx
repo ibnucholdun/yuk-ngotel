@@ -2,7 +2,7 @@ import { getReservationById } from "@/lib/data";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { differenceInCalendarDays } from "date-fns";
 import { notFound } from "next/navigation";
-import React from "react";
+import PaymentButton from "./PaymentButton";
 
 const ReservationDetail = async ({
   reservationId,
@@ -160,6 +160,15 @@ const ReservationDetail = async ({
           </tfoot>
         </table>
       </div>
+
+      {(reservation.payments?.status === "pending" ||
+        reservation.payments?.status === "unpaid") && (
+        <div className="mt-4 flex justify-end">
+          <div className="w-full md:w-auto">
+            <PaymentButton reservation={reservation} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

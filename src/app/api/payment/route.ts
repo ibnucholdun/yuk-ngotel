@@ -13,7 +13,7 @@ export const POST = async (req: Request) => {
 
   const params = {
     transaction_details: {
-      order_id: reservation.id,
+      order_id: `${reservation.id}_${Math.round(Date.now() / 1000)}`,
       gross_amount: reservation.payments?.amount || 0,
     },
     credit_card: {

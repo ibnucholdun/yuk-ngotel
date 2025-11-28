@@ -8,7 +8,7 @@ export const POST = async (req: Request) => {
     const data: PaymentProps = await req.json();
 
     const {
-      order_id: reservationId,
+      order_id: orderId,
       transaction_status,
       payment_type,
       fraud_status,
@@ -17,11 +17,8 @@ export const POST = async (req: Request) => {
       signature_key,
     } = data;
 
-    console.log("📥 Incoming Midtrans Notification:", data);
+    const reservationId = orderId.split("_")[0];
 
-    // -----------------------------------------------------
-    // 1️⃣ CEK PAYMENT TERDAFTAR?
-    // -----------------------------------------------------
     const payment = await prisma.payment.findUnique({
       where: { reservationId },
     });
@@ -37,13 +34,10 @@ export const POST = async (req: Request) => {
       );
     }
 
-    // -----------------------------------------------------
-    // 2️⃣ VALIDASI SIGNATURE KEY
-    // -----------------------------------------------------
     const hash = crypto
       .createHash("sha512")
       .update(
-        `${reservationId}${status_code}${gross_amount}${process.env.MIDTRANS_SERVER_KEY}`
+        `${orderId}${status_code}${gross_amount}${process.env.MIDTRANS_SERVER_KEY}`
       )
       .digest("hex");
 
@@ -55,9 +49,6 @@ export const POST = async (req: Request) => {
       );
     }
 
-    // -----------------------------------------------------
-    // 3️⃣ TENTUKAN STATUS BARU
-    // -----------------------------------------------------
     let newStatus = payment.status;
 
     if (transaction_status === "capture") {
@@ -70,9 +61,6 @@ export const POST = async (req: Request) => {
       newStatus = "failure";
     }
 
-    // -----------------------------------------------------
-    // 4️⃣ UPDATE PAYMENT
-    // -----------------------------------------------------
     const updated = await prisma.payment.update({
       where: { reservationId },
       data: {

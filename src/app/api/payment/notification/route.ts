@@ -17,11 +17,6 @@ export const POST = async (req: Request) => {
       signature_key,
     } = data;
 
-    console.log("📥 Incoming Midtrans Notification:", data);
-
-    // -----------------------------------------------------
-    // 1️⃣ CEK PAYMENT TERDAFTAR?
-    // -----------------------------------------------------
     const payment = await prisma.payment.findUnique({
       where: { reservationId },
     });
@@ -37,9 +32,6 @@ export const POST = async (req: Request) => {
       );
     }
 
-    // -----------------------------------------------------
-    // 2️⃣ VALIDASI SIGNATURE KEY
-    // -----------------------------------------------------
     const hash = crypto
       .createHash("sha512")
       .update(
@@ -55,9 +47,6 @@ export const POST = async (req: Request) => {
       );
     }
 
-    // -----------------------------------------------------
-    // 3️⃣ TENTUKAN STATUS BARU
-    // -----------------------------------------------------
     let newStatus = payment.status;
 
     if (transaction_status === "capture") {
@@ -70,9 +59,6 @@ export const POST = async (req: Request) => {
       newStatus = "failure";
     }
 
-    // -----------------------------------------------------
-    // 4️⃣ UPDATE PAYMENT
-    // -----------------------------------------------------
     const updated = await prisma.payment.update({
       where: { reservationId },
       data: {
@@ -81,16 +67,14 @@ export const POST = async (req: Request) => {
       },
     });
 
-    console.log("✅ Payment updated:", updated);
-
     return NextResponse.json(
       { message: "Notification processed", data: updated },
       { status: 200 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("🔥 MIDTRANS CALLBACK ERROR:", err);
     return NextResponse.json(
-      { error: "Internal error", details: err.message },
+      { error: "Internal error", details: (err as Error).message },
       { status: 500 }
     );
   }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { DeleteButton, EditButton } from "./Button";
 
 const RoomTable = async () => {
-  const rooms = await getRooms();
+  const { rooms } = await getRooms();
   if (!rooms?.length) return <p>No Room Found</p>;
 
   return (

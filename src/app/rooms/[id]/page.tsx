@@ -1,4 +1,6 @@
+import Newsletter from "@/components/Newsletter";
 import RoomDetail from "@/components/RoomDetail";
+import SimilarRooms from "@/components/SimilarRooms";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 
@@ -18,6 +20,12 @@ const RoomDetailPage = async ({
       <Suspense fallback={<div>Loading...</div>}>
         <RoomDetail roomId={roomId} />
       </Suspense>
+
+      <Suspense fallback={<div>Loading similar rooms...</div>}>
+        <SimilarRooms currentRoomId={roomId} />
+      </Suspense>
+
+      <Newsletter />
     </div>
   );
 };

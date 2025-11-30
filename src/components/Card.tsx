@@ -7,14 +7,14 @@ import { IoPeopleOutline } from "react-icons/io5";
 
 const Card = ({ room }: { room: Room }) => {
   return (
-    <div className="bg-white shadow-lg rounded-sm transition duration-100 hover:shadow-sm">
-      <div className="h-[260px] w-auto rounded-t-sm relative">
+    <div className="bg-white shadow-md rounded-xl transition-all duration-300 hover:shadow-xl overflow-hidden group">
+      <div className="h-[260px] w-auto relative overflow-hidden">
         <Image
           src={room.image}
           width={384}
           height={256}
           alt="room image"
-          className="w-full h-full object-cover rounded-t-sm"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
       </div>
       <div className="p-8">
@@ -41,7 +41,7 @@ const Card = ({ room }: { room: Room }) => {
           </div>
           <Link
             href={`/rooms/${room.id}`}
-            className="px-6 py-2.5 md:px-10 md:py-3 font-semibold text-white bg-orange-400 rounded-sm hover:bg-orange-500 transition duration-150 "
+            className="px-6 py-2.5 md:px-10 md:py-3 font-semibold text-white bg-orange-400 rounded-lg hover:bg-orange-500 transition duration-150 "
           >
             Book Now
           </Link>

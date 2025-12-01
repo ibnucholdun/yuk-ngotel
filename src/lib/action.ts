@@ -88,7 +88,7 @@ export const saveRoom = async (
     console.log(error);
   }
 
-  redirect("/admin/room");
+  redirect("/admin/dashboard/rooms");
 };
 
 // Delete Room
@@ -100,7 +100,7 @@ export const deleteRoom = async (id: string, image: string) => {
     console.log(error);
   }
 
-  revalidatePath("/admin/room");
+  revalidatePath("/admin/dashboard/rooms");
 };
 
 // update Room
@@ -152,8 +152,8 @@ export const updateRoom = async (
     console.log(error);
   }
 
-  revalidatePath("/admin/room");
-  redirect("/admin/room");
+  revalidatePath("/admin/dashboard/rooms");
+  redirect("/admin/dashboard/rooms");
 };
 
 // createREservation
@@ -170,8 +170,7 @@ export const createReservation = async (
     redirect(`/sign-in?callbackUrl=rooms/${roomId}`);
 
   const rawData = {
-    name: formData.get("name"),
-    phone: formData.get("phone"),
+    guests: formData.get("guests"),
   };
 
   const validatedFields = ReservationSchema.safeParse(rawData);
@@ -180,7 +179,22 @@ export const createReservation = async (
       error: validatedFields.error.flatten().fieldErrors,
     };
 
-  const { name, phone } = validatedFields.data;
+  const { guests } = validatedFields.data;
+
+  const room = await prisma.room.findUnique({
+    where: { id: roomId },
+    select: { capacity: true },
+  });
+
+  if (!room) return { messageDate: "Room not found" };
+  if (guests > room.capacity) {
+    return {
+      error: {
+        guests: [`Max guests allowed is ${room.capacity}`],
+      },
+    };
+  }
+
   const night = differenceInCalendarDays(endDate, startDate);
   if (night <= 0) return { messageDate: "Date must be at least 1 night" };
 
@@ -189,22 +203,13 @@ export const createReservation = async (
   let reservationId: string | null = null;
   try {
     await prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        data: {
-          name,
-          phone,
-        },
-        where: {
-          id: session.user.id,
-        },
-      });
-
       const reservation = await tx.reservation.create({
         data: {
           startDate,
           endDate,
           price,
           roomId,
+          guests,
           userId: session.user.id as string,
           payments: {
             create: {

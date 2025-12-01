@@ -6,4 +6,5 @@ export interface PaymentProps {
   gross_amount: string;
   signature_key: string;
   order_id: string;
+  settlement_time?: string;
 }

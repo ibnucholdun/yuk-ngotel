@@ -15,6 +15,7 @@ export const POST = async (req: Request) => {
       status_code,
       gross_amount,
       signature_key,
+      settlement_time,
     } = data;
 
     const reservationId = orderId.split("_")[0];
@@ -33,7 +34,6 @@ export const POST = async (req: Request) => {
         { status: 404 }
       );
     }
-
     const hash = crypto
       .createHash("sha512")
       .update(
@@ -49,6 +49,16 @@ export const POST = async (req: Request) => {
       );
     }
 
+    if (payment.status === "paid") {
+      console.log(
+        `⚠️ Callback ignored. Payment already PAID. Incoming status: ${transaction_status}`
+      );
+      return NextResponse.json(
+        { message: "Payment already paid. Callback ignored." },
+        { status: 200 }
+      );
+    }
+
     let newStatus = payment.status;
 
     if (transaction_status === "capture") {
@@ -59,6 +69,38 @@ export const POST = async (req: Request) => {
       newStatus = "pending";
     } else if (["cancel", "expire", "deny"].includes(transaction_status)) {
       newStatus = "failure";
+    }
+
+    if (
+      ["expire", "cancel", "deny"].includes(transaction_status) &&
+      settlement_time
+    ) {
+      console.log("⏳ Late EXPIRE/CANCEL callback detected — ignoring");
+      return NextResponse.json(
+        { message: "Ignoring late expire/cancel after settlement" },
+        { status: 200 }
+      );
+    }
+
+    // Double check: Jangan update ke failure jika status di DB sudah paid
+    // Ini menangani race condition atau notifikasi expire yang terlambat
+    if (newStatus === "failure") {
+      const latestPayment = await prisma.payment.findUnique({
+        where: { reservationId },
+        select: { status: true },
+      });
+
+      if (latestPayment?.status === "paid") {
+        console.log(
+          `🛑 Prevented overwriting PAID status with FAILURE for Order ID: ${orderId}`
+        );
+        return NextResponse.json(
+          {
+            message: "Ignored failure callback because payment is already paid",
+          },
+          { status: 200 }
+        );
+      }
     }
 
     const updated = await prisma.payment.update({

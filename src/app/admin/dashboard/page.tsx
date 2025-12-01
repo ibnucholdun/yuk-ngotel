@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const DashboardAdminPage = () => {
   return (
-    <div className="max-w-7xl px-4 py-16  mt-10 mx-auto">
+    <div className="max-w-7xl mx-auto">
       <h1 className="text-4xl font-bold text-gray-800">Dashboard</h1>
       <Suspense fallback={<div>Loading...</div>}>
         <DashboardCards />

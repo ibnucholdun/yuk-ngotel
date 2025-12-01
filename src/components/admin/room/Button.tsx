@@ -5,7 +5,7 @@ import { IoPencil, IoTrashOutline } from "react-icons/io5";
 export const EditButton = ({ id }: { id: string }) => {
   return (
     <Link
-      href={`/admin/room/edit/${id}`}
+      href={`/admin/dashboard/rooms/edit/${id}`}
       className="rounded-sm p-1 hover:bg-gray-200"
     >
       <IoPencil className="size-5" />

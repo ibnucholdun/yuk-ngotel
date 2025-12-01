@@ -1,13 +1,26 @@
 import Image from "next/image";
 import { getReservationByUserId } from "@/lib/data";
-import { notFound } from "next/navigation";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { differenceInCalendarDays } from "date-fns";
 import Link from "next/link";
 
 const MyReservationList = async () => {
   const reservation = await getReservationByUserId();
-  if (!reservation) return notFound();
+  if (!reservation || reservation.length === 0) {
+    return (
+      <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-100">
+        <p className="text-gray-500 text-lg">
+          You don&apos;t have any reservations yet.
+        </p>
+        <Link
+          href="/rooms"
+          className="text-orange-500 hover:underline mt-2 inline-block"
+        >
+          Book a room now
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="">
@@ -79,7 +92,7 @@ const MyReservationList = async () => {
               </Link>
             ) : (
               <Link
-                href={`/my-reservation/${reservation.id}`}
+                href={`/my-dashboard/my-reservation/${reservation.id}`}
                 className="px-6 py-1 bg-orange-400 text-white rounded-md hover:bg-orange-500"
               >
                 View Detail

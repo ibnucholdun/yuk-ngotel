@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../auth";
 
-const ProtectedRoutes = ["/my-reservation", "/checkout", "/admin"];
+const ProtectedRoutes = ["/my-dashboard", "/checkout", "/admin"];
 
 export async function proxy(request: NextRequest) {
   const session = await auth();

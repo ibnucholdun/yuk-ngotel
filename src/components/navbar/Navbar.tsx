@@ -5,7 +5,7 @@ import Navlink from "./Navlink";
 
 const Navbar = () => {
   return (
-    <div className="fix top-0 w-full bg-white shadow-sm z-20">
+    <div className="fixed top-0 w-full bg-white shadow-sm z-20">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-4">
         <Link href={"/"}>
           <Image src="/logo.png" alt="logo" width={128} height={30} priority />

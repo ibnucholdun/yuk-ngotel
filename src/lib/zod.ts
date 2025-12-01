@@ -18,6 +18,5 @@ export const RoomSchema = object({
 });
 
 export const ReservationSchema = object({
-  name: string().min(1),
-  phone: string().min(10),
+  guests: coerce.number().min(1).int(),
 });

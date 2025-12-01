@@ -32,10 +32,10 @@ const PaymentSuccessPage = async ({
           <p className="">Have a nice day!</p>
           <div className="py-10 text-center">
             <Link
-              href="/my-reservation"
+              href="/my-dashboard"
               className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
             >
-              GO TO MY RESERVVATION
+              GO TO DASHBOARD
             </Link>
           </div>
         </div>

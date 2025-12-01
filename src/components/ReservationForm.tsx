@@ -72,39 +72,26 @@ const ReservationForm = ({
         </div>
         <div className="mb-4">
           <label
-            htmlFor="name"
+            htmlFor="guests"
             className="block mb-2 text-sm font-medium text-gray-900"
           >
-            Your Name
+            Guests
           </label>
           <input
-            type="text"
-            name="name"
-            id="name"
+            type="number"
+            name="guests"
+            id="guests"
+            min={1}
+            max={room.capacity}
+            defaultValue={1}
             className="py-2 px-4 rounded-md border border-gray-300 w-full"
-            placeholder="Full Name..."
+            placeholder="Number of guests..."
           />
           <div className="" aria-live="polite" aria-atomic="true">
-            <p className="text-sm text-red-500 mt-2">{state?.error?.name}</p>
+            <p className="text-sm text-red-500 mt-2">{state?.error?.guests}</p>
           </div>
         </div>
-        <div className="mb-4">
-          <label
-            htmlFor="phone"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Phone Number
-          </label>
-          <input
-            type="text"
-            name="phone"
-            className="py-2 px-4 rounded-md border border-gray-300 w-full"
-            placeholder="Phone Number...."
-          />
-          <div className="" aria-live="polite" aria-atomic="true">
-            <p className="text-sm text-red-500 mt-2">{state?.error?.phone}</p>
-          </div>
-        </div>
+
         <button
           type="submit"
           disabled={isPending}

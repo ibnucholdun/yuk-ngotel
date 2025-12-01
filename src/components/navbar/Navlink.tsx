@@ -80,10 +80,10 @@ const Navlink = () => {
             <>
               <li>
                 <Link
-                  href="/my-reservation"
+                  href="/my-dashboard"
                   className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
                 >
-                  My Reservation
+                  My Dashboard
                 </Link>
               </li>
               {session.user.role === "admin" && (
@@ -94,14 +94,6 @@ const Navlink = () => {
                       className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
                     >
                       Dashboard
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/admin/room"
-                      className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
-                    >
-                      Manage Room
                     </Link>
                   </li>
                 </>

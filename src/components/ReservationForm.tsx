@@ -4,6 +4,7 @@ import { createReservation } from "@/lib/action";
 import { DisabledDateProps, RoomDetailProps } from "@/types/room";
 import clsx from "clsx";
 import { addDays } from "date-fns";
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,11 +12,38 @@ import "react-datepicker/dist/react-datepicker.css";
 const ReservationForm = ({
   room,
   disabledDate,
+  userPhone,
 }: {
   room: RoomDetailProps;
   disabledDate: DisabledDateProps[];
+  userPhone?: string | null;
 }) => {
-  const StartDate = new Date();
+  const getFirstAvailableDate = (disabledDates: DisabledDateProps[]) => {
+    let currentDate = new Date();
+    // Normalize to start of day
+    currentDate.setHours(0, 0, 0, 0);
+
+    // Sort disabled dates by start date
+    const sortedDisabledDates = [...disabledDates].sort(
+      (a, b) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    );
+
+    for (const range of sortedDisabledDates) {
+      const start = new Date(range.startDate);
+      const end = new Date(range.endDate);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+
+      // If current date is within a disabled range, move to the day after the end date
+      if (currentDate >= start && currentDate <= end) {
+        currentDate = addDays(end, 1);
+      }
+    }
+    return currentDate;
+  };
+
+  const StartDate = getFirstAvailableDate(disabledDate);
   const EndDate = addDays(StartDate, 1);
 
   const [startDate, setStartDate] = useState(StartDate);
@@ -94,16 +122,29 @@ const ReservationForm = ({
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || !userPhone}
           className={clsx(
             "px-10 py-3 text-center font-semibold text-white w-full bg-orange-400 rounded-sm cursor-pointer hover:bg-orange-500",
             {
               "opacity-50 cursor-progress animate-pulse": isPending,
+              "opacity-50 cursor-not-allowed": !userPhone,
             }
           )}
         >
           {isPending ? "Loading..." : "Reserve Now"}
         </button>
+        {!userPhone && (
+          <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm text-center">
+            Please fill in your phone number in{" "}
+            <Link
+              href="/my-dashboard/profile"
+              className="font-bold underline hover:text-red-800"
+            >
+              Profile
+            </Link>{" "}
+            to proceed with reservation.
+          </div>
+        )}
       </form>
     </div>
   );

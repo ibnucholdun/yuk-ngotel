@@ -1,10 +1,14 @@
+import Pagination from "@/components/Pagination";
 import { getRooms } from "@/lib/data";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { DeleteButton, EditButton } from "./Button";
 
-const RoomTable = async () => {
-  const { rooms } = await getRooms();
+const RoomTable = async ({ page = 1 }: { page?: number }) => {
+  const limit = 10;
+  const { rooms, total } = await getRooms({ page, limit });
+  const totalPages = Math.ceil(total / limit);
+
   if (!rooms?.length) return <p>No Room Found</p>;
 
   return (
@@ -58,6 +62,9 @@ const RoomTable = async () => {
           ))}
         </tbody>
       </table>
+      <div className="mt-4">
+        <Pagination totalPages={totalPages} />
+      </div>
     </div>
   );
 };

@@ -1,9 +1,9 @@
 "use client";
 
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaHistory, FaUser, FaSignOutAlt } from "react-icons/fa";
-import { signOut } from "next-auth/react";
+import { FaHistory, FaHome, FaSignOutAlt, FaUser } from "react-icons/fa";
 
 const links = [
   { href: "/my-dashboard", label: "Overview", icon: <FaHome /> },
@@ -25,7 +25,11 @@ const DashboardSidebar = () => {
       </div>
       <nav className="mt-6 px-4 space-y-2 flex-1 overflow-y-auto">
         {links.map((link) => {
-          const isActive = pathname === link.href;
+          const isActive =
+            pathname === link.href ||
+            (link.href !== "/my-dashboard" &&
+              pathname.startsWith(`${link.href}/`));
+
           return (
             <Link
               key={link.href}

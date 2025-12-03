@@ -3,6 +3,7 @@ import { Raleway } from "next/font/google";
 import "./globals.css";
 
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 import { auth } from "../../auth";
 
 const raleway = Raleway({
@@ -24,7 +25,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${raleway.variable} antialiased`}>
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <SessionProvider session={session}>
+          <Toaster />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

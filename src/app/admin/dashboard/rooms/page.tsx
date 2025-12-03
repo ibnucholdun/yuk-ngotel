@@ -1,8 +1,14 @@
 import RoomTable from "@/components/admin/room/RoomTable";
+import TableRoomAdminSkeleton from "@/components/skeletons/TableRoomAdminSkeleton";
 import Link from "next/link";
 import { Suspense } from "react";
 
-const RoomPage = () => {
+const RoomPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) => {
+  const page = Number((await searchParams).page) || 1;
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between">
@@ -14,8 +20,8 @@ const RoomPage = () => {
           Create New
         </Link>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <RoomTable />
+      <Suspense fallback={<TableRoomAdminSkeleton />}>
+        <RoomTable page={page} />
       </Suspense>
     </div>
   );

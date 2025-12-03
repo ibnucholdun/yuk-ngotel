@@ -1,8 +1,26 @@
+"use client";
+
+import { subscribeNewsletter } from "@/lib/action";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useActionState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 const Footer = () => {
+  const [state, formAction, isPending] = useActionState(
+    subscribeNewsletter,
+    null
+  );
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message);
+    }
+    if (state?.error?.email) {
+      toast.error(state.error.email[0]);
+    }
+  }, [state]);
+
   return (
     <footer className="bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 w-full py-10 md:py-16">
@@ -67,7 +85,7 @@ const Footer = () => {
             <p className="text-gray-400">
               Lorem ipsum dolor sit amet consectetur adipisicing.
             </p>
-            <form className="mt-5">
+            <form action={formAction} className="mt-5">
               <div className="mb-5">
                 <input
                   type="text"
@@ -76,9 +94,17 @@ const Footer = () => {
                   className="w-full p-3 rounded-sm bg-white"
                   placeholder="jhondoe@gmail.com"
                 />
+                <div aria-live="polite" aria-atomic="true">
+                  <p className="text-sm text-red-500 mt-2">
+                    {state?.error?.email}
+                  </p>
+                </div>
               </div>
-              <button className="bg-orange-400 p-3 font-bold text-white w-full text-center rounded-sm hover:bg-orange-500">
-                Subcribe
+              <button
+                disabled={isPending}
+                className="bg-orange-400 p-3 font-bold text-white w-full text-center rounded-sm hover:bg-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isPending ? "Subscribing..." : "Subscribe"}
               </button>
             </form>
           </div>

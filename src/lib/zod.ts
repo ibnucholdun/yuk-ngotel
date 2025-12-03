@@ -59,3 +59,7 @@ export const NewPasswordSchema = object({
   message: "Passwords don't match",
   path: ["confirmPassword"],
 });
+
+export const NewsletterSchema = object({
+  email: string().email("Invalid email address"),
+});

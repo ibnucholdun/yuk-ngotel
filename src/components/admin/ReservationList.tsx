@@ -1,9 +1,12 @@
+import Pagination from "@/components/Pagination";
 import { getReservations } from "@/lib/data";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Image from "next/image";
 
-const ReservationList = async () => {
-  const reservations = await getReservations();
+const ReservationList = async ({ page = 1 }: { page?: number }) => {
+  const limit = 10;
+  const { reservations, total } = await getReservations({ page, limit });
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="bg-white p-4 mt-5 shadow-sm">
@@ -71,6 +74,9 @@ const ReservationList = async () => {
           ))}
         </tbody>
       </table>
+      <div className="mt-4">
+        <Pagination totalPages={totalPages} />
+      </div>
     </div>
   );
 };

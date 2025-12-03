@@ -2,7 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
-import { ContactSchema, ReservationSchema, RoomSchema } from "./zod";
+import {
+  ContactSchema,
+  NewsletterSchema,
+  ReservationSchema,
+  RoomSchema,
+} from "./zod";
 import { del } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { auth } from "../../auth";
@@ -226,4 +231,49 @@ export const createReservation = async (
   }
 
   redirect(`/checkout/${reservationId}`);
+};
+
+export const subscribeNewsletter = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  const validatedFields = NewsletterSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { email } = validatedFields.data;
+
+  try {
+    await prisma.subscriber.create({
+      data: {
+        email,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Thank you for subscribing!",
+    };
+  } catch (error) {
+    // Check for unique constraint violation (P2002)
+    if ((error as any).code === "P2002") {
+      return {
+        error: {
+          email: ["You are already subscribed."],
+        },
+      };
+    }
+    console.log(error);
+    return {
+      error: {
+        email: ["Something went wrong. Please try again."],
+      },
+    };
+  }
 };

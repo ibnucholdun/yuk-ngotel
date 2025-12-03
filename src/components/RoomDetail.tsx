@@ -1,4 +1,8 @@
-import { getDisabledRoomById, getRoomDetailById } from "@/lib/data";
+import {
+  getDisabledRoomById,
+  getRoomDetailById,
+  getUserPhone,
+} from "@/lib/data";
 import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -6,9 +10,10 @@ import { IoCheckmark, IoPeopleOutline } from "react-icons/io5";
 import ReservationForm from "./ReservationForm";
 
 const RoomDetail = async ({ roomId }: { roomId: string }) => {
-  const [room, disabledDate] = await Promise.all([
+  const [room, disabledDate, userPhone] = await Promise.all([
     getRoomDetailById(roomId),
     getDisabledRoomById(roomId),
+    getUserPhone(),
   ]);
   if (!room || !disabledDate) return notFound();
 
@@ -54,7 +59,11 @@ const RoomDetail = async ({ roomId }: { roomId: string }) => {
             </div>
           </div>
 
-          <ReservationForm room={room} disabledDate={disabledDate} />
+          <ReservationForm
+            room={room}
+            disabledDate={disabledDate}
+            userPhone={userPhone}
+          />
         </div>
       </div>
     </div>

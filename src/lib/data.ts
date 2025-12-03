@@ -318,3 +318,19 @@ export const getSimilarRooms = async (roomId: string) => {
     return [];
   }
 };
+
+export const getUserPhone = async () => {
+  const session = await auth();
+  if (!session || !session.user || !session.user.id) return null;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { phone: true },
+    });
+    return user?.phone;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

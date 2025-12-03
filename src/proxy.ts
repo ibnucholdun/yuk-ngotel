@@ -16,11 +16,20 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
+  if (role === "admin") {
+    if (!pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    }
+  }
+
   if (isLoggedIn && role !== "admin" && pathname.startsWith("/admin")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isLoggedIn && pathname.startsWith("/sign-in")) {
+  if (
+    isLoggedIn &&
+    (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up"))
+  ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 }

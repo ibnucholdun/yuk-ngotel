@@ -20,3 +20,42 @@ export const RoomSchema = object({
 export const ReservationSchema = object({
   guests: coerce.number().min(1).int(),
 });
+
+export const RegisterSchema = object({
+  name: string().min(1, "Name is required"),
+  email: string().email("Invalid email address"),
+  password: string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
+  confirmPassword: string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+export const ProfileSchema = object({
+  name: string().min(1, "Name is required"),
+  phone: string().optional().nullable(),
+});
+
+export const ResetSchema = object({
+  email: string().email("Email is required"),
+});
+
+export const NewPasswordSchema = object({
+  password: string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
+  confirmPassword: string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});

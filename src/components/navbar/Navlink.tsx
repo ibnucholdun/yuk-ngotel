@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -70,13 +70,53 @@ const Navlink = () => {
           </li>
           {session && (
             <>
-              <li>
+              {/* Desktop: Single Link to Dashboard */}
+              <li className="hidden md:block">
                 <Link
                   href="/my-dashboard"
                   className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
                 >
                   My Dashboard
                 </Link>
+              </li>
+
+              {/* Mobile: Dashboard Menu Items */}
+              <li className="md:hidden border-t border-gray-200 my-2 pt-2">
+                <span className="block px-3 text-xs font-bold text-gray-500 uppercase mb-2">
+                  Dashboard
+                </span>
+              </li>
+              <li className="md:hidden">
+                <Link
+                  href="/my-dashboard"
+                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm"
+                >
+                  Overview
+                </Link>
+              </li>
+              <li className="md:hidden">
+                <Link
+                  href="/my-dashboard/my-reservation"
+                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm"
+                >
+                  My Reservations
+                </Link>
+              </li>
+              <li className="md:hidden">
+                <Link
+                  href="/my-dashboard/profile"
+                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm"
+                >
+                  Profile
+                </Link>
+              </li>
+              <li className="md:hidden">
+                <button
+                  onClick={() => signOut()}
+                  className="block w-full text-left py-2 px-3 text-red-600 hover:bg-red-50 rounded-sm"
+                >
+                  Sign Out
+                </button>
               </li>
             </>
           )}

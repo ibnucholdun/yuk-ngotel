@@ -1,1 +1,0 @@
-1.validasi pada bagian room/id user harus sudah mengisi nama dan nomer telepon di page profile

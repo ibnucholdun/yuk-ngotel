@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -23,14 +23,6 @@ const Navlink = () => {
               width={64}
               height={64}
             />
-          </div>
-          <div className="flex items-center">
-            <button
-              onClick={() => signOut()}
-              className="md:block hidden py-2 px-4 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-sm cursor-pointer"
-            >
-              Sign Out
-            </button>
           </div>
         </div>
       ) : (
@@ -86,30 +78,9 @@ const Navlink = () => {
                   My Dashboard
                 </Link>
               </li>
-              {session.user.role === "admin" && (
-                <>
-                  <li>
-                    <Link
-                      href="/admin/dashboard"
-                      className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
-                    >
-                      Dashboard
-                    </Link>
-                  </li>
-                </>
-              )}
             </>
           )}
-          {session ? (
-            <li className="pt-2 md:pt-0">
-              <button
-                onClick={() => signOut()}
-                className="md:hidden py-2.5 px-4 bg-red-400 text-white hover:bg-red-500 rounded-sm cursor-pointer"
-              >
-                Sign Out
-              </button>
-            </li>
-          ) : (
+          {!session && (
             <li className="pt-2 md:pt-0">
               <Link
                 href="/sign-in"

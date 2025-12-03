@@ -1,5 +1,6 @@
 import { del, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export const PUT = async (request: Request) => {
   const form = await request.formData();
@@ -20,7 +21,8 @@ export const PUT = async (request: Request) => {
     );
   }
 
-  const blob = await put(file.name, file, {
+  const filename = `room-image/${uuidv4()}-${file.name}`;
+  const blob = await put(filename, file, {
     access: "public",
     multipart: true,
   });

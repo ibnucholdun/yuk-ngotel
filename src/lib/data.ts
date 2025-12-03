@@ -222,7 +222,13 @@ export const getTotalCustomers = async () => {
   }
 };
 
-export const getReservations = async () => {
+export const getReservations = async ({
+  page = 1,
+  limit = 10,
+}: {
+  page?: number;
+  limit?: number;
+} = {}) => {
   const session = await auth();
 
   if (
@@ -234,30 +240,37 @@ export const getReservations = async () => {
     redirect("/");
 
   try {
-    const result = await prisma.reservation.findMany({
-      include: {
-        Room: {
-          select: {
-            name: true,
-            image: true,
-            price: true,
+    const skip = (page - 1) * limit;
+    const [reservations, total] = await prisma.$transaction([
+      prisma.reservation.findMany({
+        include: {
+          Room: {
+            select: {
+              name: true,
+              image: true,
+              price: true,
+            },
           },
-        },
-        User: {
-          select: {
-            name: true,
-            email: true,
-            phone: true,
+          User: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
           },
+          payments: true,
         },
-        payments: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-    return result;
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.reservation.count(),
+    ]);
+
+    return { reservations, total };
   } catch (error) {
     console.log(error);
-    return [];
+    return { reservations: [], total: 0 };
   }
 };
 

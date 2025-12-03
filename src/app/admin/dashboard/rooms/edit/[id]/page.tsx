@@ -1,6 +1,6 @@
 import EditRoom from "@/components/admin/room/EditRoom";
 import { notFound } from "next/navigation";
-import React, { Suspense } from "react";
+import React from "react";
 
 const EditRoomPage = async ({
   params,
@@ -12,9 +12,7 @@ const EditRoomPage = async ({
 
   return (
     <div className="max-w-7xl mx-auto">
-      <Suspense fallback={<div>Loading...</div>}>
-        <EditRoom roomId={roomId} />
-      </Suspense>
+      <EditRoom roomId={roomId} />
     </div>
   );
 };

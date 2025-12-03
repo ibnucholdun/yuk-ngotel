@@ -1,7 +1,8 @@
 import CheckoutDetail from "@/components/CheckoutDetail";
 import { Metadata } from "next";
 import Script from "next/script";
-import React, { Suspense } from "react";
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Reservation Summary",
@@ -14,12 +15,21 @@ const CheckoutDetailPage = async ({
   params: Promise<{ id: string }>;
 }) => {
   const reservationId = (await params).id;
+
+  const reservation = await prisma.reservation.findUnique({
+    where: {
+      id: reservationId,
+    },
+  });
+
+  if (!reservation) {
+    notFound();
+  }
+
   return (
     <div className="max-w-7xl px-4 mx-auto py-20 mt-12">
       <h1 className="text-2xl font-semibold mb-8">Reservation Summary</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        <CheckoutDetail reservationId={reservationId} />
-      </Suspense>
+      <CheckoutDetail reservationId={reservationId} />
 
       {/* if production remove .sandbox */}
       <Script

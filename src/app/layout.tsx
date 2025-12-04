@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     "luxury rooms",
     "staycation",
   ],
+  verification: {
+    google: "nWQxoV6x8hY-W0-gGCtD3wYw3j3fp3sYHm8EZd08GmQ",
+  },
 };
 
 export default async function RootLayout({

@@ -12,6 +12,9 @@ const raleway = Raleway({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://yuk-ngotel.vercel.app"
+  ),
   title: {
     template: "%s | Yuk Ngotel",
     default: "Yuk Ngotel - Online Booking Hotel",

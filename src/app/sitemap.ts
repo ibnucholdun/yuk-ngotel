@@ -2,7 +2,7 @@ import { getRooms } from "@/lib/data";
 import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://yuk-ngotel.com";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://yuk-ngotel.vercel.app";
 
   // Static routes
   const routes = [

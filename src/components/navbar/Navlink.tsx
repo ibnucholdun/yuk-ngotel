@@ -4,10 +4,12 @@ import clsx from "clsx";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { IoClose, IoMenu } from "react-icons/io5";
 
 const Navlink = () => {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
 
@@ -39,7 +41,12 @@ const Navlink = () => {
           <li>
             <Link
               href="/"
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
+              className={clsx(
+                "block py-2 px-3 rounded-sm md:p-0",
+                pathname === "/"
+                  ? "text-orange-500 font-bold"
+                  : "text-gray-800 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500"
+              )}
             >
               Home
             </Link>
@@ -47,7 +54,12 @@ const Navlink = () => {
           <li>
             <Link
               href="/about"
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
+              className={clsx(
+                "block py-2 px-3 rounded-sm md:p-0",
+                pathname.startsWith("/about")
+                  ? "text-orange-500 font-bold"
+                  : "text-gray-800 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500"
+              )}
             >
               About
             </Link>
@@ -55,7 +67,12 @@ const Navlink = () => {
           <li>
             <Link
               href="/rooms"
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
+              className={clsx(
+                "block py-2 px-3 rounded-sm md:p-0",
+                pathname.startsWith("/rooms")
+                  ? "text-orange-500 font-bold"
+                  : "text-gray-800 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500"
+              )}
             >
               Rooms
             </Link>
@@ -63,7 +80,12 @@ const Navlink = () => {
           <li>
             <Link
               href="/contact"
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
+              className={clsx(
+                "block py-2 px-3 rounded-sm md:p-0",
+                pathname.startsWith("/contact")
+                  ? "text-orange-500 font-bold"
+                  : "text-gray-800 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500"
+              )}
             >
               Contact
             </Link>
@@ -74,7 +96,12 @@ const Navlink = () => {
               <li className="hidden md:block">
                 <Link
                   href="/my-dashboard"
-                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0"
+                  className={clsx(
+                    "block py-2 px-3 rounded-sm md:p-0",
+                    pathname.startsWith("/my-dashboard")
+                      ? "text-orange-500 font-bold"
+                      : "text-gray-800 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500"
+                  )}
                 >
                   My Dashboard
                 </Link>
@@ -89,7 +116,12 @@ const Navlink = () => {
               <li className="md:hidden">
                 <Link
                   href="/my-dashboard"
-                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm"
+                  className={clsx(
+                    "block py-2 px-3 rounded-sm",
+                    pathname === "/my-dashboard"
+                      ? "text-orange-500 font-bold"
+                      : "text-gray-800 hover:bg-gray-100"
+                  )}
                 >
                   Overview
                 </Link>
@@ -97,7 +129,12 @@ const Navlink = () => {
               <li className="md:hidden">
                 <Link
                   href="/my-dashboard/my-reservation"
-                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm"
+                  className={clsx(
+                    "block py-2 px-3 rounded-sm",
+                    pathname.startsWith("/my-dashboard/my-reservation")
+                      ? "text-orange-500 font-bold"
+                      : "text-gray-800 hover:bg-gray-100"
+                  )}
                 >
                   My Reservations
                 </Link>
@@ -105,7 +142,12 @@ const Navlink = () => {
               <li className="md:hidden">
                 <Link
                   href="/my-dashboard/profile"
-                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm"
+                  className={clsx(
+                    "block py-2 px-3 rounded-sm",
+                    pathname.startsWith("/my-dashboard/profile")
+                      ? "text-orange-500 font-bold"
+                      : "text-gray-800 hover:bg-gray-100"
+                  )}
                 >
                   Profile
                 </Link>

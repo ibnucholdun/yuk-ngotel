@@ -97,6 +97,7 @@ const Testimonials = () => {
                       src={testimonial.image}
                       alt={testimonial.name}
                       fill
+                      sizes="48px"
                       className="rounded-full object-cover"
                     />
                   </div>

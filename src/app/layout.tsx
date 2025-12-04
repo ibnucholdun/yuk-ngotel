@@ -12,8 +12,23 @@ const raleway = Raleway({
 });
 
 export const metadata: Metadata = {
-  title: "Home",
-  description: "Online Booking Hotel",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://yuk-ngotel.vercel.app"
+  ),
+  title: {
+    template: "%s | Yuk Ngotel",
+    default: "Yuk Ngotel - Online Booking Hotel",
+  },
+  description:
+    "Experience the best stay with Yuk Ngotel. Book luxurious rooms and enjoy premium amenities.",
+  keywords: [
+    "hotel",
+    "booking",
+    "reservation",
+    "yuk ngotel",
+    "luxury rooms",
+    "staycation",
+  ],
 };
 
 export default async function RootLayout({

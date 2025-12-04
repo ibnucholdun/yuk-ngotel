@@ -2,7 +2,8 @@ import Hero from "@/components/Hero";
 import Main from "@/components/Main";
 import Facilities from "@/components/Facilities";
 import Testimonials from "@/components/Testimonials";
-import React from "react";
+import React, { Suspense } from "react";
+import RoomSkeleton from "@/components/skeletons/RoomSkeleton";
 
 const HomePage = () => {
   return (
@@ -21,7 +22,9 @@ const HomePage = () => {
             comfort and relaxation. Choose the perfect space for your stay.
           </p>
         </div>
-        <Main limit={6} />
+        <Suspense fallback={<RoomSkeleton />}>
+          <Main limit={6} />
+        </Suspense>
       </div>
 
       <Testimonials />

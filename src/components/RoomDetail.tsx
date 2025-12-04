@@ -26,6 +26,7 @@ const RoomDetail = async ({ roomId }: { roomId: string }) => {
           width={770}
           height={430}
           priority
+          sizes="(max-width: 1024px) 100vw, 66vw"
           className="w-full rounded-sm mb-8"
         />
         <h1 className="text-5xl font-semibold text-gray-900 mb-8">

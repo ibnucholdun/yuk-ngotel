@@ -3,10 +3,21 @@ import RoomDetail from "@/components/RoomDetail";
 import SimilarRooms from "@/components/SimilarRooms";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Room Detail",
-  description: "Room Detail",
-};
+import { getRoomById } from "@/lib/data";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const id = (await params).id;
+  const room = await getRoomById(id);
+
+  return {
+    title: room?.name || "Room Detail",
+    description: room?.description?.substring(0, 160) || "Room details",
+  };
+}
 const RoomDetailPage = async ({
   params,
 }: {

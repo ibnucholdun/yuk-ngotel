@@ -32,7 +32,7 @@ const Footer = () => {
                 alt="logo"
                 width={128}
                 height={49}
-                priority
+                sizes="128px"
               />
             </Link>
             <p className="text-gray-400">

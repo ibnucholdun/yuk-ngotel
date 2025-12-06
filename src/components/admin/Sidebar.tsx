@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { FaBed, FaChartLine, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaBed,
+  FaChartLine,
+  FaSignOutAlt,
+  FaEnvelope,
+  FaUsers,
+} from "react-icons/fa";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -11,6 +17,16 @@ const Sidebar = () => {
   const links = [
     { href: "/admin/dashboard", label: "Dashboard", icon: <FaChartLine /> },
     { href: "/admin/dashboard/rooms", label: "Manage Rooms", icon: <FaBed /> },
+    {
+      href: "/admin/dashboard/contact",
+      label: "Messages",
+      icon: <FaEnvelope />,
+    },
+    {
+      href: "/admin/dashboard/subscribers",
+      label: "Subscribers",
+      icon: <FaUsers />,
+    },
   ];
 
   return (

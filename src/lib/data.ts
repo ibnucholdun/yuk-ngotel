@@ -334,3 +334,71 @@ export const getUserPhone = async () => {
     return null;
   }
 };
+
+export const getContacts = async ({
+  page = 1,
+  limit = 10,
+}: {
+  page?: number;
+  limit?: number;
+} = {}) => {
+  const session = await auth();
+  if (
+    !session ||
+    !session.user ||
+    !session.user.id ||
+    session.user.role !== "admin"
+  )
+    redirect("/");
+
+  try {
+    const skip = (page - 1) * limit;
+    const [contacts, total] = await prisma.$transaction([
+      prisma.contact.findMany({
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.contact.count(),
+    ]);
+
+    return { contacts, total };
+  } catch (error) {
+    console.log(error);
+    return { contacts: [], total: 0 };
+  }
+};
+
+export const getSubscribers = async ({
+  page = 1,
+  limit = 10,
+}: {
+  page?: number;
+  limit?: number;
+} = {}) => {
+  const session = await auth();
+  if (
+    !session ||
+    !session.user ||
+    !session.user.id ||
+    session.user.role !== "admin"
+  )
+    redirect("/");
+
+  try {
+    const skip = (page - 1) * limit;
+    const [subscribers, total] = await prisma.$transaction([
+      prisma.subscriber.findMany({
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.subscriber.count(),
+    ]);
+
+    return { subscribers, total };
+  } catch (error) {
+    console.log(error);
+    return { subscribers: [], total: 0 };
+  }
+};

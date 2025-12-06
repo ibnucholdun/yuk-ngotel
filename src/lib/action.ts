@@ -277,3 +277,23 @@ export const subscribeNewsletter = async (
     };
   }
 };
+
+// Delete Contact
+export const deleteContact = async (id: string) => {
+  try {
+    await prisma.contact.delete({ where: { id } });
+  } catch (error) {
+    console.log(error);
+  }
+  revalidatePath("/admin/dashboard/contact");
+};
+
+// Delete Subscriber
+export const deleteSubscriber = async (id: string) => {
+  try {
+    await prisma.subscriber.delete({ where: { id } });
+  } catch (error) {
+    console.log(error);
+  }
+  revalidatePath("/admin/dashboard/subscribers");
+};

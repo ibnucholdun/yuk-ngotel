@@ -402,3 +402,37 @@ export const getSubscribers = async ({
     return { subscribers: [], total: 0 };
   }
 };
+
+export const getUsers = async ({
+  page = 1,
+  limit = 10,
+}: {
+  page?: number;
+  limit?: number;
+} = {}) => {
+  const session = await auth();
+  if (
+    !session ||
+    !session.user ||
+    !session.user.id ||
+    session.user.role !== "admin"
+  )
+    redirect("/");
+
+  try {
+    const skip = (page - 1) * limit;
+    const [users, total] = await prisma.$transaction([
+      prisma.user.findMany({
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: skip,
+      }),
+      prisma.user.count(),
+    ]);
+
+    return { users, total };
+  } catch (error) {
+    console.log(error);
+    return { users: [], total: 0 };
+  }
+};

@@ -25,7 +25,7 @@ const Hero = () => {
         </p>
         <div className="flex gap-5">
           <Link
-            href="/room"
+            href="/rooms"
             className="bg-orange-400 text-white hover:bg-orange-500 py-2.5 px-6 md:px-10 text-lg hover:scale-105 duration-300 hover-shadow-lg"
           >
             Book Now

@@ -297,3 +297,16 @@ export const deleteSubscriber = async (id: string) => {
   }
   revalidatePath("/admin/dashboard/subscribers");
 };
+
+// Update User Role
+export const updateUserRole = async (userId: string, role: string) => {
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { role },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  revalidatePath("/admin/dashboard/users");
+};

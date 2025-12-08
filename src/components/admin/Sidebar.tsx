@@ -9,6 +9,7 @@ import {
   FaSignOutAlt,
   FaEnvelope,
   FaUsers,
+  FaUserCog,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -26,6 +27,11 @@ const Sidebar = () => {
       href: "/admin/dashboard/subscribers",
       label: "Subscribers",
       icon: <FaUsers />,
+    },
+    {
+      href: "/admin/dashboard/users",
+      label: "User Management",
+      icon: <FaUserCog />,
     },
   ];
 
